@@ -56,7 +56,7 @@ for i in range(0, selCount):
             geompy.addToStudyInFather( selobj_i, comp_sf_i, name_group_i )
             comp_sf_j = geompy.MakeCompound(cont_sf_j)
             name_group_j = 'CZ_' + str(j) + str(i)
-            geompy.addToStudyInFather( selobj_j, CONT2[k], name_group_j )
+            geompy.addToStudyInFather( selobj_j, comp_sf_j, name_group_j )
 	    
 
 
