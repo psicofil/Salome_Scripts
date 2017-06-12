@@ -4,7 +4,7 @@
 # Version: 14/04/2017
 
 # CONFIGURATION - EDIT THE FOLLOWING LINE TO MATCH YOUR GMSH BINARY
-gmsh_bin_linux = "/home/lucio/gmsh-3.0.2/bin/gmsh"
+gmsh_bin_linux = "/usr/bin/gmsh"
 gmsh_bin_windwos = "C:\\Daten\\gmsh-2.10.0-Windows\\gmsh.exe"
 gmsh_bin_other = "/usr/bin/gmsh"
 
