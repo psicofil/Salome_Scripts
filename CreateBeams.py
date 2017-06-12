@@ -33,9 +33,17 @@ Face_1 = geompy.MakeFaceWires(selobj, 1)
 Face_2 = geompy.MakeFaceWires(selobj1, 1)
 
 faces1 = geompy.ExtractShapes(Face_1, geompy.ShapeType["FACE"], True)
+
+if faces1 == []:
+    faces1 = [Face_1]
+
 group1=list()
 
 faces2 = geompy.ExtractShapes(Face_2, geompy.ShapeType["FACE"], True)
+
+if faces2 == []:
+    faces2 = [Face_2]
+
 group2=list()
 
 for i in faces1:
@@ -79,8 +87,4 @@ else:
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser(1)
   salome.sg.UpdateView()
-
-
-
-
 
