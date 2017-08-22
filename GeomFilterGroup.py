@@ -1,13 +1,29 @@
 # Create groups form filters
-
-import salome
-salome.salome_init()
 import GEOM
-from salome.geom import geomBuilder
-geompy = geomBuilder.New(salome.myStudy)
+from salome.geom.geomtools import getGeompy, GeomStudyTools
 import math
-from PyQt4 import QtGui,QtCore
-import SALOMEDS
+import os
+import salome_pluginsmanager
+
+
+geompy = getGeompy()
+geomTool = GeomStudyTools()
+
+import sys
+import salome
+from platform import system
+import subprocess
+import tempfile
+try:
+    from PyQt4 import QtGui,QtCore
+    from PyQt4.QtGui import *
+    from PyQt4.QtCore import *
+except:
+    from PyQt5.QtWidgets import QWidget, QMessageBox
+    from PyQt5 import QtCore, QtGui
+    import PyQt5.QtCore as QtCore
+    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore import Qt
 
 
 ###### PROCEED ######
@@ -16,6 +32,8 @@ import SALOMEDS
 def selectGroupRef():
     try:
         # selected Object
+        selobj = geomTool.getGeomObjectSelected()
+        #str(self.selobj.GetTopologyType())
         selected=salome.sg.getSelected(0)
         selobjID=salome.myStudy.FindObjectID(selected)
         selobj=selobjID.GetObject()
@@ -29,6 +47,7 @@ def selectGroupRef():
             cb_norm.setEnabled(False)
     except:
         selobj = None
+        QMessageBox.critical(None,'Error',"error 101",QMessageBox.Abort)
     return selobj
 
 
@@ -69,7 +88,7 @@ def proceed():
         name_g = str(le_nam_g.text())
         pr = eval(str(sb_tol.text()))
     except:
-        QtGui.QMessageBox.critical(None,'Error',"error 1",QtGui.QMessageBox.Abort)
+        QMessageBox.critical(None,'Error',"error 1",QMessageBox.Abort)
     try:
         # Selected elements for the group whit the desired conditios
         for i in elements:
@@ -129,22 +148,22 @@ def proceed():
                 group.append(ID)
                 cond.append(cond)
     except:
-        QtGui.QMessageBox.critical(None,'Error',"error 2",QtGui.QMessageBox.Abort)
+        QMessageBox.critical(None,'Error',"error 2",QMessageBox.Abort)
     # Add elements desired to Group
     try:
         geompy.UnionIDs(Group_f, group)
-        # Set color of the group
-        Group_f.SetColor(SALOMEDS.Color(1,0,0))
-        # Add group in hte gui
+        ## Add group in hte gui
         resGroup = geompy.addToStudyInFather(father, Group_f, name_g)
-        # View group
+        ## View group
         gg = salome.ImportComponentGUI("GEOM")
+        # Set color of the group
+        gg.setColor(resGroup,255,0,0)
         gg.createAndDisplayGO(resGroup)
-        # Update Object Browser
+        ## Update Object Browser
         if salome.sg.hasDesktop():
             salome.sg.updateObjBrowser(1)
     except:
-        QtGui.QMessageBox.critical(None,'Error',"error 3",QtGui.QMessageBox.Abort)
+        QMessageBox.critical(None,'Error',"error 3",QMessageBox.Abort)
     return 0.0
 
 
@@ -153,38 +172,38 @@ def hide():
 
 
 ### GUI APLIACTION ###
-dialog = QtGui.QDialog()
+dialog = QDialog()
 dialog.resize(400,300)
 dialog.setWindowTitle("Create Group for same criteriums")
 dialog.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 # Options
-l_ref_g  = QtGui.QLabel("Reference Group:")
-pb_ref_g = QtGui.QPushButton()
+l_ref_g  = QLabel("Reference Group:")
+pb_ref_g = QPushButton()
 pb_ref_g.setText("Select")
-le_ref_g = QtGui.QLineEdit()
-l_nam_g  = QtGui.QLabel("Name result Group:")
-le_nam_g = QtGui.QLineEdit()
+le_ref_g = QLineEdit()
+l_nam_g  = QLabel("Name result Group:")
+le_nam_g = QLineEdit()
 le_nam_g.setText("Group_R")
-l_crit   = QtGui.QLabel("Criteriums")
-cb_size  = QtGui.QCheckBox("Size")
+l_crit   = QLabel("Criteriums")
+cb_size  = QCheckBox("Size")
 cb_size.setChecked(QtCore.Qt.Checked)
-cb_locx  = QtGui.QCheckBox("Location X")
-cb_locy  = QtGui.QCheckBox("Location Y")
-cb_locz  = QtGui.QCheckBox("Location Z")
-cb_norm  = QtGui.QCheckBox("Normal")
+cb_locx  = QCheckBox("Location X")
+cb_locy  = QCheckBox("Location Y")
+cb_locz  = QCheckBox("Location Z")
+cb_norm  = QCheckBox("Normal")
 cb_norm.setEnabled(False)
-l_tol    = QtGui.QLabel("% Tolerance:")
-sb_tol   = QtGui.QDoubleSpinBox()
+l_tol    = QLabel("% Tolerance:")
+sb_tol   = QDoubleSpinBox()
 sb_tol.setValue(0.01)
 sb_tol.setMaximum(1.00)
 sb_tol.setMinimum(0.01)
-okbox = QtGui.QDialogButtonBox(dialog)
+okbox = QDialogButtonBox(dialog)
 okbox.setOrientation(QtCore.Qt.Horizontal)
-okbox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+okbox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
 # Call selectGroupRef function
 selectGroupRef()
 # Layout
-layout = QtGui.QGridLayout(dialog)
+layout = QGridLayout(dialog)
 layout.addWidget(l_ref_g,1,0)
 layout.addWidget(pb_ref_g,2,0)
 layout.addWidget(le_ref_g,2,1)
@@ -202,11 +221,9 @@ layout.addWidget(okbox,12,1)
 dialog.setLayout(layout)
 # Conectios
 pb_ref_g.clicked.connect(selectGroupRef)
-QtCore.QObject.connect(okbox, QtCore.SIGNAL("accepted()"), proceed)
-QtCore.QObject.connect(okbox, QtCore.SIGNAL("rejected()"), hide) 
+okbox.accepted.connect(proceed)
+okbox.rejected.connect(hide)
 QtCore.QMetaObject.connectSlotsByName(dialog)
 
 # Dialog show
 dialog.show()
-
-
