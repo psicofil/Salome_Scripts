@@ -41,22 +41,21 @@ for i in range(0, selCount):
 	      props = geompy.BasicProperties(common1)
 	      area_com = props[1]
 	      if Common == False:
-                  if area_com > 0:
+                  if area_com > 0.0:
                       name_group_i = 'CZ_' + str(i) + str(j) + '_' + str(k)
                       geompy.addToStudyInFather( selobj_i, CONT[h], name_group_i )
                       name_group_j = 'CZ_' + str(j) + str(i) + '_' + str(h)
                       geompy.addToStudyInFather( selobj_j, CONT2[k], name_group_j )
 	      if Common == True:
-                  if area_com > 0:
+                  if area_com > 0.0:
                       cont_sf_i.append(CONT[h])
                       cont_sf_j.append(CONT2[k])
-        if Common == True:
-            comp_sf_i = geompy.MakeCompound(cont_sf_i)
-            name_group_i = 'CZ_' + str(i) + str(j)
-            geompy.addToStudyInFather( selobj_i, comp_sf_i, name_group_i )
-            comp_sf_j = geompy.MakeCompound(cont_sf_j)
-            name_group_j = 'CZ_' + str(j) + str(i)
-            geompy.addToStudyInFather( selobj_j, comp_sf_j, name_group_j )
+                      comp_sf_i = geompy.MakeCompound(cont_sf_i)
+                      name_group_i = 'CZ_' + str(i) + str(j)
+                      geompy.addToStudyInFather( selobj_i, comp_sf_i, name_group_i )
+                      comp_sf_j = geompy.MakeCompound(cont_sf_j)
+                      name_group_j = 'CZ_' + str(j) + str(i)
+                      geompy.addToStudyInFather( selobj_j, comp_sf_j, name_group_j )
 	    
 
 
