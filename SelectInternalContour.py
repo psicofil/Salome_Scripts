@@ -37,7 +37,7 @@ if selCount == 2:
       if area_com > 0:
 	if External_Volume_Result == True:
 	  volume = geompy.MakeCompound([list_shell[i]])
-	  geompy.addToStudy( volume, 'VolumenInterno' )
+	  geompy.addToStudy( volume, 'InternalVolume' )
 	  gg = salome.ImportComponentGUI("GEOM")
           volume.SetColor(SALOMEDS.Color(1,0,0))
 	else:
@@ -50,7 +50,7 @@ if selCount == 2:
 	      geompy.AddObject(Group_ob, ID)
             except:
 	      pass
-	  resGroup = geompy.addToStudyInFather(selobj, Group_ob, 'SuperficieInterna')
+	  resGroup = geompy.addToStudyInFather(selobj, Group_ob, 'InternalSurface')
           gg = salome.ImportComponentGUI("GEOM")
           gg.setColor(resGroup,255,0,0)
           gg.createAndDisplayGO(resGroup)
