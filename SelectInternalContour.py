@@ -7,6 +7,7 @@ External_Volume_Result = True
 import salome
 salome.salome_init()
 import GEOM
+import SALOMEDS
 from salome.geom import geomBuilder
 geompy = geomBuilder.New(salome.myStudy)
 
